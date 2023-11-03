@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
 @WebServlet("/j1102/test2Ok")
-public class Test2Ok extends HttpServlet {
+public class Test2Ok extends HttpServlet implements ServletContextListener {
 	@Override
 	protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("2.이곳은 service() 메소드 입니다.");
@@ -31,7 +31,7 @@ public class Test2Ok extends HttpServlet {
 	@Override
 	public void destroy() {
 		System.out.println("5.이곳은 destroy() 메소드 입니다.");
-	} 
+	}
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -60,6 +60,26 @@ public class Test2Ok extends HttpServlet {
 		System.out.println("3.이곳은 doPost() 메소드 입니다.");
 		doGet(request, response);
 	}
-
 	
-}	
+	@PostConstruct
+	public void initPostConstruct() {
+		System.out.println("0.이곳은 @ PostConstruct 입니다.");
+	}
+	
+	@PreDestroy
+	public void destroyPreDestroy() {
+		System.out.println("6.이곳은 @ PreDestroy 입니다.");
+	}
+	
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+		System.out.println("00.이곳은 contextInitialized 입니다.");
+	}
+	
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
+		System.out.println("100.이곳은 contextDestroyed 입니다.");
+	}
+	
+	
+}

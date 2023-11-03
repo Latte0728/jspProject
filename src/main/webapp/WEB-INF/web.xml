@@ -11,13 +11,17 @@
 
 <!--  Controller역할(@ webServlet를 대행)  -->
 <servlet>
-<servlet-name>jjTest1Ok</servlet-name>
-<servlet-class>study.j1102.Test1Ok</servlet-class>
+	<servlet-name>jjTest1Ok</servlet-name>
+	<servlet-class>study.j1102.Test1Ok</servlet-class>
 </servlet>
+
+
 <servlet-mapping>
-<servlet-name>jjTest1Ok</servlet-name>
-<url-pattern>/j1102/test1Ok</url-pattern>
+	<url-pattern>/j1102/test1Ok</url-pattern>
+	<servlet-name>jjTest1Ok</servlet-name>
 </servlet-mapping>
+
+
 <servlet>
 <servlet-name>jjTest1Ok2</servlet-name>
 <servlet-class>study.j1102.Test1Ok2</servlet-class>
