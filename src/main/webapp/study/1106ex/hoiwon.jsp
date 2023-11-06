@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>test1.jsp</title>
+  <title>hoiwon.jsp</title>
   <jsp:include page="/include/bs4.jsp" />
 </head>
 <body>
