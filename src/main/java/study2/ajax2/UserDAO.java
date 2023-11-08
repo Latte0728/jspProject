@@ -1,4 +1,5 @@
-package study.database;
+
+package study2.ajax2;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,17 +8,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class LoginDAO2 {
+public class UserDAO {
 	private Connection conn = null;
 	private PreparedStatement pstmt = null;
 	private ResultSet rs = null;
 
 	String sql = "";
 	
-	private LoginVO vo = null;
+	private UserVO vo = null;
 
 	// DAO객체의 생성과 동시에 DB 접속처리 한다.
-	public LoginDAO2() {
+	public UserDAO() {
 		String url = "jdbc:mysql://localhost:3306/javaProject";
 		String user = "root";
 		String password = "1234";
@@ -62,49 +63,21 @@ public class LoginDAO2 {
 		}
 	}
 
-	// 로그인 처리
-	public LoginVO getLoginCheck(String mid, String pwd) {
-		vo = new LoginVO();
-		try {
-			sql = "select * from login where mid=? and pwd=?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, mid);
-			pstmt.setString(2, pwd);
-			rs = pstmt.executeQuery();
-			if(rs.next()) {
-				vo.setIdx(rs.getInt("idx"));
-				vo.setMid(rs.getString("mid"));
-				vo.setPwd(rs.getString("pwd"));
-				vo.setName(rs.getString("name"));
-				vo.setPoint(rs.getInt("point"));
-				vo.setLastDate(rs.getString("lastDate"));
-				vo.setTodayCount(rs.getInt("todayCount"));
-			}
-		} catch (SQLException e) {
-			System.out.println("sql구문 오류 : " + e.getMessage());
-		} finally {
-			rsClose();
-		}
-		return vo;
-	}
-
 	// 전체 조회 처리
-	public ArrayList<LoginVO> getLoginList() {
-		ArrayList<LoginVO> vos = new ArrayList<LoginVO>();
+	public ArrayList<UserVO> getUserList() {
+		ArrayList<UserVO> vos = new ArrayList<UserVO>();
 		try {
-			sql = "select * from login order by name";
+			sql = "select * from user order by idx desc";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
 			while(rs.next()) {
-				vo = new LoginVO();
+				vo = new UserVO();
 				vo.setIdx(rs.getInt("idx"));
 				vo.setMid(rs.getString("mid"));
-				vo.setPwd(rs.getString("pwd"));
 				vo.setName(rs.getString("name"));
-				vo.setPoint(rs.getInt("point"));
-				vo.setLastDate(rs.getString("lastDate"));
-				vo.setTodayCount(rs.getInt("todayCount"));
+				vo.setAge(rs.getInt("age"));
+				vo.setAddress(rs.getString("address"));
 				
 				vos.add(vo);
 			}
@@ -116,38 +89,57 @@ public class LoginDAO2 {
 		return vos;
 	}
 
-	// 변경된 내용을 DB에 Update처리
-	public void setLoginUpdate(LoginVO vo) {
+	// 아이디 중복 체크
+	public String getMidSearch(String mid) {
+		String res = "0";
 		try {
-			sql = "update login set point=?, lastDate=now(), todayCount=?  where mid = ?";
+			sql = "select * from user where mid = ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, vo.getPoint());
-			pstmt.setInt(2, vo.getTodayCount());
-			pstmt.setString(3, vo.getMid());
+			pstmt.setString(1, mid);
+			rs = pstmt.executeQuery();
+			if(!rs.next()) res = "1";
+		} catch (SQLException e) {
+			System.out.println("sql구문 오류 : " + e.getMessage());
+		} finally {
+			rsClose();
+		}
+		return res;
+	}
+
+	// 회원 가입하기
+	public String setUserInputOk(UserVO vo) {
+		String res = "0";
+		try {
+			sql = "insert into user values (default,?,?,?,?)";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, vo.getMid());
+			pstmt.setString(2, vo.getName());
+			pstmt.setInt(3, vo.getAge());
+			pstmt.setString(4, vo.getAddress());
 			pstmt.executeUpdate();
+			res = "1";
 		} catch (SQLException e) {
 			System.out.println("sql구문 오류 : " + e.getMessage());
 		} finally {
 			pstmtClose();
 		}
+		return res;
 	}
 
-	// 개별 검색처리
-	public LoginVO getLoginSearch(String mid) {
-		vo = new LoginVO();
+	// idx로 검색하기
+	public UserVO getIdxSearch(int idx) {
+		UserVO vo = new UserVO();
 		try {
-			sql = "select * from login where mid = ?";
+			sql = "select * from user where idx = ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, mid);
+			pstmt.setInt(1, idx);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				vo.setIdx(rs.getInt("idx"));
 				vo.setMid(rs.getString("mid"));
-				vo.setPwd(rs.getString("pwd"));
 				vo.setName(rs.getString("name"));
-				vo.setPoint(rs.getInt("point"));
-				vo.setLastDate(rs.getString("lastDate"));
-				vo.setTodayCount(rs.getInt("todayCount"));
+				vo.setAge(rs.getInt("age"));
+				vo.setAddress(rs.getString("address"));
 			}
 		} catch (SQLException e) {
 			System.out.println("sql구문 오류 : " + e.getMessage());
@@ -157,17 +149,18 @@ public class LoginDAO2 {
 		return vo;
 	}
 
-	// 회원 가입 처리
-	public int setJoinOk(LoginVO vo) {
-		int res = 0;
+	// 정보 수정...
+	public String setUserUpdate(UserVO vo) {
+		String res = "0";
 		try {
-			sql = "insert into login values (default,?,?,?,default,default,default)";
+			sql = "update user set name=?, age=?, address=? where mid = ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, vo.getMid());
-			pstmt.setString(2, vo.getPwd());
-			pstmt.setString(3, vo.getName());
-			res = pstmt.executeUpdate();
-			// System.out.println("res : " + res);
+			pstmt.setString(1, vo.getName());
+			pstmt.setInt(2, vo.getAge());
+			pstmt.setString(3, vo.getAddress());
+			pstmt.setString(4, vo.getMid());
+			pstmt.executeUpdate();
+			res = "1";
 		} catch (SQLException e) {
 			System.out.println("sql구문 오류 : " + e.getMessage());
 		} finally {
@@ -176,14 +169,15 @@ public class LoginDAO2 {
 		return res;
 	}
 
-	// 회원 삭제처리
-	public int setDeleteOk(String mid) {
-		int res = 0;
+	// 회원 삭제
+	public String setUserDelete(int idx) {
+		String res = "0";
 		try {
-			sql = "delete from login where mid = ?";
+			sql = "delete from user where idx = ?";
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, mid);
-			res = pstmt.executeUpdate();
+			pstmt.setInt(1, idx);
+			pstmt.executeUpdate();
+			res = "1";
 		} catch (SQLException e) {
 			System.out.println("sql구문 오류 : " + e.getMessage());
 		} finally {
@@ -191,23 +185,4 @@ public class LoginDAO2 {
 		}
 		return res;
 	}
-
-	// 회원 정보 수정하기
-	public int setUpdateOk(LoginVO vo) {
-		int res = 0;
-		try {
-			sql = "update login set pwd=?, name=? where mid = ?";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, vo.getPwd());
-			pstmt.setString(2, vo.getName());
-			pstmt.setString(3, vo.getMid());
-			res = pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.out.println("sql구문 오류 : " + e.getMessage());
-		} finally {
-			pstmtClose();
-		}
-		return res;
-	}
-		
 }

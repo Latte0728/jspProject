@@ -54,7 +54,7 @@
    </context-param>
    <context-param>
      <param-name>homeAddress</param-name>
-     <param-value>http://192.168.50.20:9090/javaProject/study/1102_web_xml/test1.jsp</param-value>
+     <param-value>http://192.168.50.56:9090/javaProject/study/1102_web_xml/test1.jsp</param-value>
    </context-param>
    
    <!-- dbcp 설정 선언 -->

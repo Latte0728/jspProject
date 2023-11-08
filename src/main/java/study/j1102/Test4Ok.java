@@ -21,12 +21,12 @@ public class Test4Ok extends HttpServlet {
   	String logoName = getInitParameter("logoName");
   	String homeAddress = getInitParameter("homeAddress");
   	
-  	HttpSession session = request.getSession();
+  	HttpSession session = request.getSession(); // session 생성
   	
-  	session.setAttribute("sLogoName", logoName);
-  	session.setAttribute("sHomeAddress", homeAddress);
+  	session.setAttribute("sLogoName", logoName); // logoName을 sLogoName에 담아 setAttribute에 저장
+  	session.setAttribute("sHomeAddress", homeAddress); //homeAddress을 sHomeAddress에 담아 setAttribute에 저장 
   	
-  	String viewPage = "/study/1102_web_xml/test4_init.jsp";
+  	String viewPage = "/study/1102_web_xml/test4_init.jsp"; // /study/1102_web_xml/test4_init.jsp로 viewPage(sLogoName,homeAddress) 보냄 
   	RequestDispatcher dispatcher = request.getRequestDispatcher(viewPage);
   	dispatcher.forward(request, response);
   }

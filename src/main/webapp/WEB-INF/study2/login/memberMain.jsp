@@ -29,19 +29,19 @@
     		alert("검색할 아이디를 입력하세요");
     	}
     	else {
-    		location.href = '${ctp}/database/MemberSearch?mid='+mid;
+    		location.href = '${ctp}/database/memberSearch.lo?mid='+mid;
     	}
     }
     
     function logoutCheck() {
     	let ans = confirm("로그아웃 하시겠습니까?");
-    	if(ans) location.href = "${ctp}/database/logout";
+    	if(ans) location.href = "${ctp}/database/logout.lo";
     }
     
     // 회원 탈퇴처리
     function deleteCheck() {
     	let ans = confirm("정말 회원 탈퇴 하시겠습니까?");
-    	if(ans) location.href = "${ctp}/database/deleteOk";
+    	if(ans) location.href = "${ctp}/database/deleteOk.lo";
     }
   </script>
 </head>
@@ -49,19 +49,19 @@
 <p><br/></p>
 <div class="container text-center">
   <h2>회원 메일 화면</h2>
-  <div>${sName}님 로그인 중이십니다.</div>
+  <div>${sName}/${sMid}님 로그인 중이십니다.</div>
   <hr/>
   <p>현재 보유중인 포인트 : ${sPoint}</p>
   <p>최종 접속일 : ${fn:substring(sLastDate,0,16)}</p>
   <p>오늘 접속횟수 : ${sTodayCount}회</p>
   <hr/>
   <c:set var="random"><%=(int)(Math.random()*5)+1 %></c:set>
-  <p><img src="${ctp}/images/${random}.jpg" width="300px"/></p>
+  <p><img src="${ctp}/images/33.jpg" width="300px"/></p>
   <hr/>
   <div class="row" style="font-size:10px">
     <div class="col"><a href="javascript:searchCheck()" class="btn btn-success">개별조회</a></div>
-    <div class="col"><a href="${ctp}/database/memberList" class="btn btn-primary">전체조회</a></div>
-    <div class="col"><a href="${ctp}/study/database/update.jsp" class="btn btn-info">정보수정</a></div>
+    <div class="col"><a href="${ctp}/database/memberList.lo" class="btn btn-primary">전체조회</a></div>
+    <div class="col"><a href="${ctp}/study/database/update.lo" class="btn btn-info">정보수정</a></div>
     <div class="col"><a href="javascript:logoutCheck()" class="btn btn-warning">로그아웃</a></div>
     <div class="col"><a href="javascript:deleteCheck()" class="btn btn-danger">회원탈퇴</a></div>
   </div>
